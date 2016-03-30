@@ -50,3 +50,9 @@ sq64:
 	gcc -O2 -m64 -D_SQ64 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
 	ar rc $(OUT) *.o
 	rm *.o
+
+sqnspire:
+	nspire-gcc -O2 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
+	# Ndless doesn't provide a ndless-ar wrapper
+	arm-none-eabi-ar rc $(OUT) *.o
+	rm *.o

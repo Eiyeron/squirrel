@@ -17,6 +17,11 @@ sq64: folders
 	cd sqstdlib; $(MAKE) sq64
 	cd sq; $(MAKE) sq64
 
+sqnspire: folders
+	cd squirrel; $(MAKE) sqnspire
+	cd sqstdlib; $(MAKE) sqnspire
+	cd sq; $(MAKE) sqnspire
+
 folders:
 	mkdir -p lib
 	mkdir -p bin
