@@ -123,6 +123,7 @@ typedef char SQChar;
 #define sciscntrl   iscntrl
 #define scisalpha   isalpha
 #define scisalnum   isalnum
+// TODO : What to do with this one?
 #define scprintf    nio_printf
 #define MAX_CHAR 0xFF
 

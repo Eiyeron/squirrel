@@ -57,35 +57,47 @@ SQInteger quit(HSQUIRRELVM v)
 
 void printfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
 {
-    char buffer[1000];
     va_list vl;
     va_start(vl, s);
+#if defined(_TINSPIRE)
+    char buffer[1000];
     vsprintf(buffer, s, vl);
     scprintf(buffer);
-    // scvprintf(stdout, s, vl);
+#else    
+    scvprintf(stdout, s, vl);
+#endif
     va_end(vl);
     (void)v; /* UNUSED */
 }
 
 void errorfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
 {
-    char buffer[1000];
     va_list vl;
     va_start(vl, s);
+#if defined(_TINSPIRE)
+    char buffer[1000];
     vsprintf(buffer, s, vl);
     scprintf(buffer);
-    // scvprintf(stderr, s, vl);
+#else
+    scvprintf(stderr, s, vl);
+#endif
     va_end(vl);
 }
 
 void PrintVersionInfos()
 {
+#ifdef _TINSPIRE
     scfprintf(nio_get_default(),_SC("%s %s (%d bits)\n"),SQUIRREL_VERSION,SQUIRREL_COPYRIGHT,((int)(sizeof(SQInteger)*8)));
+#else
+    scfprintf(stdout,_SC("%s %s (%d bits)\n"),SQUIRREL_VERSION,SQUIRREL_COPYRIGHT,((int)(sizeof(SQInteger)*8)));
+#endif
 }
 
 void PrintUsage()
 {
-    scfprintf(nio_get_default(),_SC("usage: sq <options> <scriptpath [args]>.\n")
+// One can't call an Ndless program with arguments IIRC
+#ifndef _TINSPIRE
+    scfprintf(stderr,_SC("usage: sq <options> <scriptpath [args]>.\n")
         _SC("Available options are:\n")
         _SC("   -c              compiles the file to bytecode(default output 'out.cnut')\n")
         _SC("   -o              specifies output file for the -c option\n")
@@ -93,6 +105,7 @@ void PrintUsage()
         _SC("   -d              generates debug infos\n")
         _SC("   -v              displays version infos\n")
         _SC("   -h              prints help\n"));
+#endif
 }
 
 #define _INTERACTIVE 0
@@ -263,8 +276,11 @@ void Interactive(HSQUIRRELVM v)
         for(;;) {
             int c;
             if(done)return;
+#ifdef _TINSPIRE
             c = nio_getchar();
-            uart_printf("c : %d (==\\n? %d)\n", c, c =='\n');
+#else
+            c = getchar();
+#endif
             if (c == _SC('\n') || c == 0/*nspireio*/) {
                 if (i>0 && buffer[i-1] == _SC('\\'))
                 {
@@ -283,7 +299,11 @@ void Interactive(HSQUIRRELVM v)
                     buffer[i++] = (SQChar)c;
             }
             else if (i >= MAXINPUT-1) {
+#ifdef _TINSPIRE
                 scprintf(_SC("sq : input line too long\n"));
+#else
+                scfprintf(stderr, _SC("sq : input line too long\n"));
+#endif
                 break;
             }
             else{
