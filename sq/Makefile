@@ -21,7 +21,7 @@ sq64:
 	g++ -O2 -m64 -fno-exceptions -fno-rtti -D_SQ64 -o $(OUT) $(SRCS) $(INCZ) $(LIBZ) $(LIB)
 
 sqnspire:
-	nspire-g++ -O2 -fno-exceptions -fno-rtti -o $(OUT).elf $(SRCS) $(INCZ) $(LIBZ) $(LIB)
+	nspire-gcc -O2 -fno-exceptions -o $(OUT).elf $(SRCS) $(INCZ) $(LIBZ) $(LIB) -lnspireio
 	# Nspire executable file generation
 	genzehn --input $(OUT).elf --output $(OUT).zehn $(ZEHNFLAGS)
 	make-prg $(OUT).zehn $(OUT).tns

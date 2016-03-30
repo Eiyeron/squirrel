@@ -101,6 +101,33 @@ typedef wchar_t SQChar;
 
 #define sq_rsl(l) ((l)<<WCHAR_SHIFT_MUL)
 
+#elif defined(_TINSPIRE)
+#include <nspireio/nspireio.h>
+typedef char SQChar;
+#define _SC(a) a
+
+#define scstrcmp    strcmp
+#define scsprintf   snprintf
+#define scstrlen    strlen
+#define scstrtod    strtod
+
+#define scstrtol    strtol
+
+#define scstrtoul   strtoul
+#define scvsprintf  vsnprintf
+#define scstrstr    strstr
+#define scisspace   isspace
+#define scisdigit   isdigit
+#define scisprint   isprint
+#define scisxdigit  isxdigit
+#define sciscntrl   iscntrl
+#define scisalpha   isalpha
+#define scisalnum   isalnum
+#define scprintf    nio_printf
+#define MAX_CHAR 0xFF
+
+#define sq_rsl(l) (l)
+
 #else
 typedef char SQChar;
 #define _SC(a) a

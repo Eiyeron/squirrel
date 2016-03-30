@@ -8,6 +8,8 @@
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
 #include <conio.h>
+#elif defined(_TINSPIRE)
+#include <nspireio/nspireio.h>
 #endif
 #include <squirrel.h>
 #include <sqstdblob.h>
@@ -20,6 +22,9 @@
 #ifdef SQUNICODE
 #define scfprintf fwprintf
 #define scvprintf vfwprintf
+#elif defined(_TINSPIRE)
+#define scfprintf nio_fprintf
+#define scvprintf nio_fprintf
 #else
 #define scfprintf fprintf
 #define scvprintf vfprintf
@@ -37,6 +42,10 @@ int MemAllocHook( int allocType, void *userData, size_t size, int blockType,
 }
 #endif
 
+#if defined(_TINSPIRE)
+nio_console *csl;
+#endif
+
 
 SQInteger quit(HSQUIRRELVM v)
 {
@@ -48,29 +57,35 @@ SQInteger quit(HSQUIRRELVM v)
 
 void printfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
 {
+    char buffer[1000];
     va_list vl;
     va_start(vl, s);
-    scvprintf(stdout, s, vl);
+    vsprintf(buffer, s, vl);
+    scprintf(buffer);
+    // scvprintf(stdout, s, vl);
     va_end(vl);
     (void)v; /* UNUSED */
 }
 
 void errorfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
 {
+    char buffer[1000];
     va_list vl;
     va_start(vl, s);
-    scvprintf(stderr, s, vl);
+    vsprintf(buffer, s, vl);
+    scprintf(buffer);
+    // scvprintf(stderr, s, vl);
     va_end(vl);
 }
 
 void PrintVersionInfos()
 {
-    scfprintf(stdout,_SC("%s %s (%d bits)\n"),SQUIRREL_VERSION,SQUIRREL_COPYRIGHT,((int)(sizeof(SQInteger)*8)));
+    scfprintf(nio_get_default(),_SC("%s %s (%d bits)\n"),SQUIRREL_VERSION,SQUIRREL_COPYRIGHT,((int)(sizeof(SQInteger)*8)));
 }
 
 void PrintUsage()
 {
-    scfprintf(stderr,_SC("usage: sq <options> <scriptpath [args]>.\n")
+    scfprintf(nio_get_default(),_SC("usage: sq <options> <scriptpath [args]>.\n")
         _SC("Available options are:\n")
         _SC("   -c              compiles the file to bytecode(default output 'out.cnut')\n")
         _SC("   -o              specifies output file for the -c option\n")
@@ -248,8 +263,9 @@ void Interactive(HSQUIRRELVM v)
         for(;;) {
             int c;
             if(done)return;
-            c = getchar();
-            if (c == _SC('\n')) {
+            c = nio_getchar();
+            uart_printf("c : %d (==\\n? %d)\n", c, c =='\n');
+            if (c == _SC('\n') || c == 0/*nspireio*/) {
                 if (i>0 && buffer[i-1] == _SC('\\'))
                 {
                     buffer[i-1] = _SC('\n');
@@ -267,7 +283,7 @@ void Interactive(HSQUIRRELVM v)
                     buffer[i++] = (SQChar)c;
             }
             else if (i >= MAXINPUT-1) {
-                scfprintf(stderr, _SC("sq : input line too long\n"));
+                scprintf(_SC("sq : input line too long\n"));
                 break;
             }
             else{
@@ -308,6 +324,9 @@ int main(int argc, char* argv[])
 {
     HSQUIRRELVM v;
     SQInteger retval = 0;
+#if defined(_TINSPIRE)
+    nio_init(csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, NIO_COLOR_BLACK, NIO_COLOR_WHITE, TRUE);
+#endif
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetAllocHook(MemAllocHook);
 #endif
@@ -344,6 +363,11 @@ int main(int argc, char* argv[])
 #if defined(_MSC_VER) && defined(_DEBUG)
     _getch();
     _CrtMemDumpAllObjectsSince( NULL );
+#endif
+#if defined(_TINSPIRE)
+    nio_printf("\n---\nPress a key to exit.");
+    nio_getch(nio_get_default());
+    nio_free(csl);
 #endif
     return retval;
 }
