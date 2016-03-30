@@ -52,7 +52,7 @@ sq64:
 	rm *.o
 
 sqnspire:
-	nspire-gcc -O2 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
+	nspire-gcc -O2 -fno-exceptions -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
 	# Ndless doesn't provide a ndless-ar wrapper
 	arm-none-eabi-ar rc $(OUT) *.o
 	rm *.o
