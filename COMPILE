@@ -77,3 +77,11 @@ for 64 bits systems
 VISUAL C++ USERS
 .........................................................
 Open squirrel.dsw from the root project directory and build(dho!)
+
+
+TI-NSPIRE USERS
+.........................................................
+The default makefile support compilation for Ti-Nspire, as long as
+the binaries are in the PATH.
+
+ $ make sqnspire
