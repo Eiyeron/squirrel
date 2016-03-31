@@ -8,7 +8,7 @@ LIB= -lsquirrel -lsqstdlib
 
 OBJS= sq.o
 
-SRCS= sq.c
+SRCS= sq.c lib_glue.c n2DLib/n2DLib.c
 
 
 sq32:

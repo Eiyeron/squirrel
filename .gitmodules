@@ -1,0 +1,3 @@
+[submodule "sq/n2DLib"]
+	path = sq/n2DLib
+	url = git@github.com:n2DLib/n2DLib.git
