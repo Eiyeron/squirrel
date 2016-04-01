@@ -235,6 +235,18 @@ SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
 
 }
 
+SQInteger n2d_drawLine (HSQUIRRELVM v)
+{
+	int x1, x2, y1, y2;
+	unsigned int color;
+	sq_getinteger(v, 2, &x1);
+	sq_getinteger(v, 3, &y1);
+	sq_getinteger(v, 4, &x2);
+	sq_getinteger(v, 5, &y2);
+	sq_getinteger(v, 6, &color);
+	drawLine(x1, y1, x2, y2, color);
+	return 0;
+}
 
 SQInteger n2d_fillCircle (HSQUIRRELVM v)
 {
@@ -304,7 +316,7 @@ SQInteger n2d_drawChar (HSQUIRRELVM v)
 	sq_getinteger(v, 2, &x);
 	sq_getinteger(v, 3, &y);
 	sq_getinteger(v, 4, &margin);
-	sq_getstring(v, 5, &ch);
+	sq_getinteger(v, 5, &ch);
 	sq_getinteger(v, 6, &fc);
 	sq_getinteger(v, 7, &olc);
 	drawChar(&x, &y, margin, ch, fc, olc);
@@ -329,17 +341,19 @@ static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(setPixelUnsafe,4,_SC(".iii")),
     _DECL_GLOBALIO_FUNC(setPixel,4,_SC(".iii")),
     _DECL_GLOBALIO_FUNC(setPixelRGB,6,_SC(".iiiii")),
-    _DECL_GLOBALIO_FUNC(drawHLine,4,_SC(".iii")),
-    _DECL_GLOBALIO_FUNC(fillRect,5,_SC(".iiii")),
+    _DECL_GLOBALIO_FUNC(drawHLine,5,_SC(".iiii")),
+    _DECL_GLOBALIO_FUNC(drawVLine,5,_SC(".iiii")),
+    _DECL_GLOBALIO_FUNC(fillRect,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(drawSprite,6,_SC(".xiiii")),
     _DECL_GLOBALIO_FUNC(drawSpritePart,10,_SC(".xiiiiiiii")),
     _DECL_GLOBALIO_FUNC(drawSpriteScaled,8,_SC(".xiiiiiiii")),
     _DECL_GLOBALIO_FUNC(drawSpriteRotated,13,_SC(".xiiiiiiiiiii")),
-    _DECL_GLOBALIO_FUNC(fillRect,5,_SC(".iiii")),
+    _DECL_GLOBALIO_FUNC(drawLine,6,_SC(".iiiii")),
+    _DECL_GLOBALIO_FUNC(fillRect,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(fillCircle,5,_SC(".iiii")),
     _DECL_GLOBALIO_FUNC(fillEllipse,5,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(drawString,7,_SC(".iiisii")),
-    _DECL_GLOBALIO_FUNC(drawDecimal,5,_SC(".iiiii")),
+    _DECL_GLOBALIO_FUNC(drawDecimal,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(drawChar,7,_SC(".iiiiiii")),
 
     {NULL,(SQFUNCTION)0,0,NULL}
