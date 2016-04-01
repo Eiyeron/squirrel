@@ -10,6 +10,7 @@
 #include <conio.h>
 #elif defined(_TINSPIRE)
 #include <nspireio/nspireio.h>
+#include <libndls.h>
 #endif
 #include <squirrel.h>
 #include <sqstdblob.h>
@@ -346,6 +347,8 @@ int main(int argc, char* argv[])
     SQInteger retval = 0;
 #if defined(_TINSPIRE)
     nio_init(csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, NIO_COLOR_BLACK, NIO_COLOR_WHITE, TRUE);
+    // Register sq in Ndless registry
+    cfg_register_fileext("nut", "sq");
 #endif
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetAllocHook(MemAllocHook);
