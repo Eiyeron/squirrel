@@ -1,4 +1,5 @@
 #include <squirrel.h>
+#include <sqstdblob.h>
 #include "n2DLib/n2DLib.h"
 
  SQInteger register_global_func(HSQUIRRELVM v,SQFUNCTION f,const char *fname)
@@ -32,8 +33,63 @@ SQRESULT register_lib(HSQUIRRELVM v, const SQChar *lib_name, const SQRegFunction
 
 }
 
-// n2DLib glue.
+//////////////////
+// n2DLib glue. //
+//////////////////
 
+// Utilities
+
+SQInteger n2d_itofix (HSQUIRRELVM v)
+{
+	int i;
+	sq_getinteger(v, 2, &i);
+	sq_pushinteger(v, itofix(i));
+	return 1;
+}
+
+SQInteger n2d_fixtoi (HSQUIRRELVM v)
+{
+	Fixed f;
+	sq_getinteger(v, 2, &f);
+	sq_pushinteger(v, fixtoi(f));
+	return 1;
+}
+
+SQInteger n2d_fixdiv (HSQUIRRELVM v)
+{
+	Fixed x, y;
+	sq_getinteger(v, 2, &x);
+	sq_getinteger(v, 3, &y);
+	sq_pushinteger(v, fixdiv(x, y));
+}
+
+SQInteger n2d_fixmul (HSQUIRRELVM v)
+{
+	Fixed x, y;
+	sq_getinteger(v, 2, &x);
+	sq_getinteger(v, 3, &y);
+	sq_pushinteger(v, fixmul(x, y));
+	return 1;
+}
+
+SQInteger n2d_fixcos (HSQUIRRELVM v)
+{
+	Fixed angle;
+	sq_getinteger(v, 2, &angle);
+	sq_pushinteger(v, fixcos(angle));
+	return 1;
+}
+
+SQInteger n2d_fixsin (HSQUIRRELVM v)
+{
+	Fixed angle;
+	sq_getinteger(v, 2, &angle);
+	sq_pushinteger(v, fixsin(angle));
+	return 1;
+}
+
+
+// Drawing routines
 
 SQInteger n2d_initBuffering (HSQUIRRELVM v)
 {
@@ -331,6 +387,13 @@ SQInteger n2d_drawChar (HSQUIRRELVM v)
 
 #define _DECL_GLOBALIO_FUNC(name,nparams,typecheck) {_SC(#name),n2d_##name,nparams,typecheck}
 static const SQRegFunction n2d_funcs[]={
+    _DECL_GLOBALIO_FUNC(itofix,2,_SC(".i")),
+    _DECL_GLOBALIO_FUNC(fixtoi,2,_SC(".i")),
+    _DECL_GLOBALIO_FUNC(fixdiv,2,_SC(".ii")),
+    _DECL_GLOBALIO_FUNC(fixmul,2,_SC(".ii")),
+    _DECL_GLOBALIO_FUNC(fixsin,2,_SC(".i")),
+    _DECL_GLOBALIO_FUNC(fixcos,2,_SC(".i")),
+
     _DECL_GLOBALIO_FUNC(initBuffering,1,_SC(".")),
     _DECL_GLOBALIO_FUNC(deinitBuffering,1,_SC(".")),
     _DECL_GLOBALIO_FUNC(updateScreen,1,_SC(".")),
