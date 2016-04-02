@@ -75,7 +75,7 @@ SQInteger n2d_clearBufferW (HSQUIRRELVM v)
 
 SQInteger n2d_getPixel (HSQUIRRELVM v)
 {
-	SQUserPointer *image;
+	SQUserPointer image;
 	unsigned int x, y;
 	sqstd_getblob(v, 2, &image);
 	sq_getinteger(v, 3, &x);
@@ -155,7 +155,7 @@ SQInteger n2d_fillRect (HSQUIRRELVM v)
 
 SQInteger n2d_drawSprite (HSQUIRRELVM v)
 {
-	SQUserPointer *image;
+	SQUserPointer image;
 	unsigned x, y, flash;
 	unsigned int flash_color;
 	sqstd_getblob(v, 2, &image);
@@ -170,7 +170,7 @@ SQInteger n2d_drawSprite (HSQUIRRELVM v)
 
 SQInteger n2d_drawSpritePart (HSQUIRRELVM v)
 {
-	SQUserPointer *image;
+	SQUserPointer image;
 	unsigned x, y, flash;
 	unsigned xp, yp, wp, hp;
 	unsigned int flash_color;
@@ -191,14 +191,14 @@ SQInteger n2d_drawSpritePart (HSQUIRRELVM v)
 
 SQInteger n2d_drawSpriteScaled (HSQUIRRELVM v)
 {
-	SQUserPointer *image;
+	SQUserPointer image;
 	int xs, ys, ws, hs, flash;
 	unsigned int flash_color;
 	sqstd_getblob(v, 2, &image);
 	sq_getinteger(v, 3, &xs);
 	sq_getinteger(v, 4, &ys);
-	sq_getinteger(v, 5, &ws);
-	sq_getinteger(v, 6, &hs);
+	sq_getinteger(v, 5, &hs);
+	sq_getinteger(v, 6, &ws);
 	sq_getinteger(v, 7, &flash);
 	sq_getinteger(v, 8, &flash_color);
 	Rect r = {xs, ys, ws, hs};
@@ -209,7 +209,7 @@ SQInteger n2d_drawSpriteScaled (HSQUIRRELVM v)
 
 SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
 {
-	SQUserPointer *image;
+	SQUserPointer image;
 	int xsr, ysr, wsr, hsr;
 	int xrc, yrc, wrc, hrc;
 	int angle, flash;
@@ -277,7 +277,7 @@ SQInteger n2d_drawString (HSQUIRRELVM v)
 	sq_getinteger(v, 2, &x);
 	sq_getinteger(v, 3, &y);
 	sq_getinteger(v, 4, &margin);
-	sq_getstring(v, 5, &str);
+	sq_getstring(v, 5, (const SQChar**)&str);
 	sq_getinteger(v, 6, &fc);
 	sq_getinteger(v, 7, &olc);
 	drawString(&x, &y, margin, (char*)str, fc, olc);
