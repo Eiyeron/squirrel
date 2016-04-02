@@ -385,6 +385,22 @@ SQInteger n2d_drawChar (HSQUIRRELVM v)
 	return 1;
 }
 
+SQInteger n2d_numberWidth (HSQUIRRELVM v)
+{
+	int n;
+	sq_getinteger(v, 2);
+	sq_pushinteger(v, numberWidth(n));
+	return 1;
+}
+
+SQInteger n2d_stringWidth (HSQUIRRELVM v)
+{
+	SQChar* str;
+	sq_getstring(v, 2, (const SQChar**)&str);
+	sq_pushinteger(v, stringWidth((const char*)str));
+	return 1;
+}
+
 #define _DECL_GLOBALIO_FUNC(name,nparams,typecheck) {_SC(#name),n2d_##name,nparams,typecheck}
 static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(itofix,2,_SC(".i")),
@@ -418,6 +434,8 @@ static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(drawString,7,_SC(".iiisii")),
     _DECL_GLOBALIO_FUNC(drawDecimal,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(drawChar,7,_SC(".iiiiiii")),
+    _DECL_GLOBALIO_FUNC(numberWidth,2,_SC(".i")),
+    _DECL_GLOBALIO_FUNC(stringWidth,2,_SC(".s")),
 
     {NULL,(SQFUNCTION)0,0,NULL}
 };
