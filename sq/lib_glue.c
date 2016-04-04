@@ -415,7 +415,7 @@ SQInteger n2d_stringWidth (HSQUIRRELVM v)
 	return 1;
 }
 
-SQInteger n2d_getKeyPressed(HSQUIRRELVM v)
+SQInteger n2d_getKeyPressed (HSQUIRRELVM v)
 {
 	t_key collect;
 	int result = get_key_pressed(&collect);
@@ -460,7 +460,7 @@ SQInteger n2d_getKeyPressed(HSQUIRRELVM v)
 	return 1;
 }
 
-SQInteger n2d_isKey(HSQUIRRELVM v)
+SQInteger n2d_isKey (HSQUIRRELVM v)
 {
 		t_key collect;
 		int arrow;
@@ -501,6 +501,30 @@ SQInteger n2d_isKey(HSQUIRRELVM v)
 		return 1;
 }
 
+SQInteger n2d_loadBMP (HSQUIRRELVM v)
+{
+	SQChar *path;
+	unsigned int transparency_color;
+
+	sq_getstring(v, 2, (const SQChar**)&path);
+	sq_getinteger(v, 3, &transparency_color);
+	unsigned short *bmp = loadBMP((const char*)path, (unsigned short)transparency_color);
+	if(bmp == NULL)
+	{
+		sq_pushnull(v);
+		return 1;
+	}
+
+	int bmp_length = sizeof(unsigned short) * (bmp[0] * bmp[1] + 3);
+	SQUserPointer blob = sqstd_createblob(v, bmp_length);
+	
+	memcpy(blob, bmp, bmp_length);	
+
+
+	free(bmp);
+	return 1;
+}
+
 #define _DECL_GLOBALIO_FUNC(name,nparams,typecheck) {_SC(#name),n2d_##name,nparams,typecheck}
 static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(itofix,2,_SC(".i")),
@@ -539,6 +563,8 @@ static const SQRegFunction n2d_funcs[]={
 
     _DECL_GLOBALIO_FUNC(getKeyPressed,1,_SC(".")),
     _DECL_GLOBALIO_FUNC(isKey,3,_SC(".ti")),
+
+    _DECL_GLOBALIO_FUNC(loadBMP,3,_SC(".si")),
 
     {NULL,(SQFUNCTION)0,0,NULL}
 };
