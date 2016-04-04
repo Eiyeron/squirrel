@@ -300,7 +300,7 @@ SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
 	Rect sr = {xsr, ysr, wsr, hsr};
 	Rect rc = {xrc, yrc, wrc, hrc};
 	drawSpriteRotated((const unsigned short*)image, &sr, &rc, (Fixed)angle, flash, flash_color);
-
+	return 0;
 }
 
 SQInteger n2d_drawLine (HSQUIRRELVM v)
@@ -324,6 +324,7 @@ SQInteger n2d_fillCircle (HSQUIRRELVM v)
 	sq_getinteger(v, 4, &r);
 	sq_getinteger(v, 5, &color);
 	fillCircle(x, y, r, color);
+	return 0;
 }
 
 SQInteger n2d_fillEllipse (HSQUIRRELVM v)
@@ -335,6 +336,7 @@ SQInteger n2d_fillEllipse (HSQUIRRELVM v)
 	sq_getinteger(v, 5, &R);
 	sq_getinteger(v, 6, &color);
 	fillEllipse(x, y, r, R, color);
+	return 0;
 }
 
 SQInteger n2d_drawString (HSQUIRRELVM v)
@@ -400,7 +402,7 @@ SQInteger n2d_drawChar (HSQUIRRELVM v)
 SQInteger n2d_numberWidth (HSQUIRRELVM v)
 {
 	int n;
-	sq_getinteger(v, 2);
+	sq_getinteger(v, 2, &n);
 	sq_pushinteger(v, numberWidth(n));
 	return 1;
 }
