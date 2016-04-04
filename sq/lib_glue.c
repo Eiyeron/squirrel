@@ -37,6 +37,18 @@ SQRESULT register_lib(HSQUIRRELVM v, const SQChar *lib_name, const SQRegFunction
 // n2DLib glue. //
 //////////////////
 
+// Key glue data
+#define GLUE_KEY(x) &KEY_NSPIRE_ ## x,
+static const t_key const * key_array[] = {
+	#include "n2dlib_keys.xmacro"
+};
+#undef GLUE_KEY
+
+#define GLUE_KEY(x) "NK_"#x ,
+static const char * key_array_names[] = {
+	#include "n2dlib_keys.xmacro"
+};
+#undef GLUE_KEY
 // Utilities
 
 SQInteger n2d_itofix (HSQUIRRELVM v)
@@ -401,6 +413,92 @@ SQInteger n2d_stringWidth (HSQUIRRELVM v)
 	return 1;
 }
 
+SQInteger n2d_getKeyPressed(HSQUIRRELVM v)
+{
+	t_key collect;
+	int result = get_key_pressed(&collect);
+	if(result)
+	{
+		sq_newtable(v);
+		sq_pushstring(v, "row", -1);
+		sq_pushinteger(v, collect.row);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "col", -1);
+		sq_pushinteger(v, collect.col);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_row", -1);
+		sq_pushinteger(v, collect.tpad_row);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_col", -1);
+		sq_pushinteger(v, collect.tpad_col);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_arrow", -1);
+		sq_pushinteger(v, collect.tpad_arrow);
+		sq_newslot(v, -3, SQFalse);
+	}
+	else
+	{
+		sq_newtable(v);
+		sq_pushstring(v, "row", -1);
+		sq_pushinteger(v, _KEY_DUMMY_ROW);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "col", -1);
+		sq_pushinteger(v, _KEY_DUMMY_COL);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_row", -1);
+		sq_pushinteger(v, _KEY_DUMMY_ROW);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_col", -1);
+		sq_pushinteger(v,_KEY_DUMMY_COL);
+		sq_newslot(v, -3, SQFalse);
+		sq_pushstring(v, "tpad_arrow", -1);
+		sq_pushinteger(v, TPAD_ARROW_NONE);
+		sq_newslot(v, -3, SQFalse);
+	}
+	return 1;
+}
+
+SQInteger n2d_isKey(HSQUIRRELVM v)
+{
+		t_key collect;
+		int arrow;
+		int key_index;
+		sq_getinteger(v, 3, &key_index);
+
+		sq_pushstring(v, "row", -1);
+		sq_get(v, 2);
+		sq_getinteger(v, -1, &collect.row);
+
+		sq_pushstring(v, "col", -1);
+		sq_get(v, 2);
+		sq_getinteger(v, -1, &collect.col);
+		
+		sq_pushstring(v, "tpad_row", -1);
+		sq_get(v, 2);
+		sq_getinteger(v, -1, &collect.tpad_row);
+		
+		sq_pushstring(v, "tpad_col", -1);
+		sq_get(v, 2);
+		sq_getinteger(v, -1, &collect.tpad_col);
+		
+		sq_pushstring(v, "tpad_arrow", -1);
+		sq_get(v, 2);
+		sq_getinteger(v, -1, &arrow);
+		
+		collect.tpad_arrow = arrow;
+
+
+		if((key_index>=0) && (key_index < sizeof(key_array)/sizeof(t_key*)))
+		{
+			t_key* ref = key_array[key_index];
+			sq_pushbool(v, isKey(collect, *ref));
+		}
+		else
+			sq_pushbool(v,  false);
+
+		return 1;
+}
+
 #define _DECL_GLOBALIO_FUNC(name,nparams,typecheck) {_SC(#name),n2d_##name,nparams,typecheck}
 static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(itofix,2,_SC(".i")),
@@ -437,11 +535,43 @@ static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(numberWidth,2,_SC(".i")),
     _DECL_GLOBALIO_FUNC(stringWidth,2,_SC(".s")),
 
+    _DECL_GLOBALIO_FUNC(getKeyPressed,1,_SC(".")),
+    _DECL_GLOBALIO_FUNC(isKey,3,_SC(".ti")),
+
     {NULL,(SQFUNCTION)0,0,NULL}
 };
 
+SQRESULT register_keys (HSQUIRRELVM v)
+{
+
+    SQInteger top = sq_gettop(v);
+	SQObject enumeration_table;
+	
+	// Get const table
+	sq_pushconsttable(v);
+	// push new enum's name
+	sq_pushstring(v,"n2dk",-1);
+	// Create enum tale
+	sq_newtable(v);
+
+	// For each value, push it in the enum.
+	for(int i = 0; i < sizeof(key_array)/sizeof(t_key*); i++)
+	{
+		// table.i = index;
+		sq_pushstring(v, (SQChar*)key_array_names[i], -1);
+		sq_pushinteger(v, i);
+		sq_newslot(v, -3, false);
+	}
+
+	// Adding it to the const table
+	sq_newslot(v, -3, SQFalse);
+	// Popping the const table.
+    sq_settop(v,top);
+}
+
 SQRESULT register_n2dlib (HSQUIRRELVM v)
 {
-	return register_lib(v, _SC("n2d"), n2d_funcs);
+	register_keys(v);
+	register_lib(v, _SC("n2d"), n2d_funcs);
 }
 #undef _DECL_GLOBALIO_FUNC
