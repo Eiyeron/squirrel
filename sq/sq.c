@@ -346,6 +346,8 @@ int main(int argc, char* argv[])
     HSQUIRRELVM v;
     SQInteger retval = 0;
 #if defined(_TINSPIRE)
+    if(enable_relative_paths(argv))
+        return 0;
     nio_init(csl, NIO_MAX_COLS, NIO_MAX_ROWS, 0, 0, NIO_COLOR_BLACK, NIO_COLOR_WHITE, TRUE);
     // Register sq in Ndless registry
     cfg_register_fileext("nut", "sq");
