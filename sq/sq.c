@@ -367,8 +367,9 @@ int main(int argc, char* argv[])
     sqstd_register_mathlib(v);
     sqstd_register_stringlib(v);
 
+#if defined(_TINSPIRE)
     register_n2dlib(v);
-
+#endif
     //aux library
     //sets error handlers
     sqstd_seterrorhandlers(v);

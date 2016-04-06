@@ -8,7 +8,7 @@ LIB= -lsquirrel -lsqstdlib
 
 OBJS= sq.o
 
-SRCS= sq.c lib_glue.c n2DLib/n2DLib.c
+SRCS= sq.c 
 
 
 sq32:
@@ -20,6 +20,7 @@ sqprof:
 sq64:
 	g++ -O2 -m64 -fno-exceptions -fno-rtti -D_SQ64 -o $(OUT) $(SRCS) $(INCZ) $(LIBZ) $(LIB)
 
+sqnspire: SRCS += n2DLib/n2DLib.c lib_glue.c 
 sqnspire:
 	nspire-gcc -O2 -fno-exceptions -o $(OUT).elf $(SRCS) $(INCZ) $(LIBZ) $(LIB) -lnspireio
 	# Nspire executable file generation
