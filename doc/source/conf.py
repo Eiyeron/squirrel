@@ -223,12 +223,14 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-_stdauthor = r'Alberto Demichelis'
+_stdauthor = r'Alberto Demichelis, Florian "Eiyeron" Dormont, Matrefeytontias'
 latex_documents = [
     ('reference/index', 'reference.tex',
      'Squirrel Reference Manual', _stdauthor, 'manual'),
      ('stdlib/index', 'stdlib.tex',
      'Squirrel Standard Library', _stdauthor, 'manual'),
+     ('n2DLib/index', 'n2DLib.tex',
+     'Squirrel n2SDLib Library', _stdauthor, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
