@@ -22,7 +22,7 @@ The following compilers have been confirmed to be working:
               5.3.1 (amd64)
     Illumos gcc 4.0.0 (x86 and amd64)
     ARM Linux gcc 4.6.3 (Raspberry Pi Model B)
-    Ndless-SDK 5.3.0 (arm)
+    Ndless-SDK 4.2 gcc 5.3.0 (arm)
 
 
 Feedback and suggestions are appreciated
