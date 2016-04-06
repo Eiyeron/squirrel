@@ -85,3 +85,12 @@ The default makefile support compilation for Ti-Nspire, as long as
 the binaries are in the PATH.
 
  $ make sqnspire
+
+Note
+----
+
+In sqconfig.h there is a small point to notice : scprintf's function
+must be chosen according to which use of squirrel you want to do.
+As nspireio doesn't take over printf, you have to replace it with
+nio_printf if you even intend to use Nspire-IO or keep it at printf
+if you will embed the interpreter in a project.

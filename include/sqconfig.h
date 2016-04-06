@@ -123,7 +123,8 @@ typedef char SQChar;
 #define sciscntrl   iscntrl
 #define scisalpha   isalpha
 #define scisalnum   isalnum
-// TODO : What to do with this one?
+// Use this function instead if you want to bundle squirrel in a lib and not using Nspire-IO for output.
+// #define scprintf    printf
 #define scprintf    nio_printf
 #define MAX_CHAR 0xFF
 
