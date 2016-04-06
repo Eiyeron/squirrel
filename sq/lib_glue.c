@@ -290,15 +290,13 @@ SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
 	
 	sq_getinteger(v, 7, &xrc);
 	sq_getinteger(v, 8, &yrc);
-	sq_getinteger(v, 9, &wrc);
-	sq_getinteger(v, 10, &hrc);
 
-	sq_getinteger(v, 11, &angle);
-	sq_getinteger(v, 12, &flash);
-	sq_getinteger(v, 13, &flash_color);
+	sq_getinteger(v, 9, &angle);
+	sq_getinteger(v, 10, &flash);
+	sq_getinteger(v, 11, &flash_color);
 
 	Rect sr = {xsr, ysr, wsr, hsr};
-	Rect rc = {xrc, yrc, wrc, hrc};
+	Rect rc = {xrc, yrc, 0, 0};
 	drawSpriteRotated((const unsigned short*)image, &sr, &rc, (Fixed)angle, flash, flash_color);
 	return 0;
 }
@@ -550,7 +548,7 @@ static const SQRegFunction n2d_funcs[]={
     _DECL_GLOBALIO_FUNC(drawSprite,6,_SC(".xiiii")),
     _DECL_GLOBALIO_FUNC(drawSpritePart,10,_SC(".xiiiiiiii")),
     _DECL_GLOBALIO_FUNC(drawSpriteScaled,8,_SC(".xiiiiiiii")),
-    _DECL_GLOBALIO_FUNC(drawSpriteRotated,13,_SC(".xiiiiiiiiiii")),
+    _DECL_GLOBALIO_FUNC(drawSpriteRotated,11,_SC(".xiiiiiiiii")),
     _DECL_GLOBALIO_FUNC(drawLine,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(fillRect,6,_SC(".iiiii")),
     _DECL_GLOBALIO_FUNC(fillCircle,5,_SC(".iiii")),
