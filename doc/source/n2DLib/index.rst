@@ -4,7 +4,7 @@
   Squirrel N2DLib Library 
 ###########################
 
-Copyrigth (c) 2016 Florian "Eiyeron" Dormont
+Copyrigth (c) 2016 Florian "Eiyeron" Dormont, Matrefeytontias
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

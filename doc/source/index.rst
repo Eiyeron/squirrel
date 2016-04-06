@@ -13,6 +13,7 @@ Contents:
 
    reference/index.rst
    stdlib/index.rst
+   n2DLib/index.rst
 
 
 Indices and tables

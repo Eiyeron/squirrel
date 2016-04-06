@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Squirrel documentation'
-copyright = '2003-%s, Alberto Demichelis' % time.strftime('%Y')
-author = u'Alberto Demichelis'
+copyright = '2003-%s, Alberto Demichelis, Florian "Eiyeron" Dormont' % time.strftime('%Y')
+author = u'Alberto Demichelis, Florian "Eiyeron" Dormont'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
