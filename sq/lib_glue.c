@@ -251,10 +251,10 @@ SQInteger n2d_drawSpritePart (HSQUIRRELVM v)
 	sq_getinteger(v, 8, &hp);
 	sq_getinteger(v, 9, &flash);
 	sq_getinteger(v, 10, &flash_color);
-	Rect r = {x, y, wp, hp};
+	Rect r = {xp, yp, wp, hp};
 	drawSpritePart((const unsigned short*)image, x, y, &r, flash, (unsigned short) flash_color);
 	return 0;
-	
+
 }
 
 SQInteger n2d_drawSpriteScaled (HSQUIRRELVM v)
@@ -272,7 +272,7 @@ SQInteger n2d_drawSpriteScaled (HSQUIRRELVM v)
 	Rect r = {xs, ys, ws, hs};
 	drawSpriteScaled((const unsigned short*)image, &r, flash, (unsigned short) flash_color);
 	return 0;
-	
+
 }
 
 SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
@@ -287,7 +287,7 @@ SQInteger n2d_drawSpriteRotated (HSQUIRRELVM v)
 	sq_getinteger(v, 4, &ysr);
 	sq_getinteger(v, 5, &wsr);
 	sq_getinteger(v, 6, &hsr);
-	
+
 	sq_getinteger(v, 7, &xrc);
 	sq_getinteger(v, 8, &yrc);
 
@@ -472,19 +472,19 @@ SQInteger n2d_isKey (HSQUIRRELVM v)
 		sq_pushstring(v, "col", -1);
 		sq_get(v, 2);
 		sq_getinteger(v, -1, &collect.col);
-		
+
 		sq_pushstring(v, "tpad_row", -1);
 		sq_get(v, 2);
 		sq_getinteger(v, -1, &collect.tpad_row);
-		
+
 		sq_pushstring(v, "tpad_col", -1);
 		sq_get(v, 2);
 		sq_getinteger(v, -1, &collect.tpad_col);
-		
+
 		sq_pushstring(v, "tpad_arrow", -1);
 		sq_get(v, 2);
 		sq_getinteger(v, -1, &arrow);
-		
+
 		collect.tpad_arrow = arrow;
 
 
@@ -515,8 +515,8 @@ SQInteger n2d_loadBMP (HSQUIRRELVM v)
 
 	int bmp_length = sizeof(unsigned short) * (bmp[0] * bmp[1] + 3);
 	SQUserPointer blob = sqstd_createblob(v, bmp_length);
-	
-	memcpy(blob, bmp, bmp_length);	
+
+	memcpy(blob, bmp, bmp_length);
 
 
 	free(bmp);
@@ -572,7 +572,7 @@ SQRESULT register_keys (HSQUIRRELVM v)
 
     SQInteger top = sq_gettop(v);
 	SQObject enumeration_table;
-	
+
 	// Get const table
 	sq_pushconsttable(v);
 	// push new enum's name
