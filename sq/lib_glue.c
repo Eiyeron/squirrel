@@ -39,16 +39,20 @@ SQRESULT register_lib(HSQUIRRELVM v, const SQChar *lib_name, const SQRegFunction
 
 // Key glue data
 #define GLUE_KEY(x) &KEY_NSPIRE_ ## x,
+#define GLUE_NUMBER_KEY(x) &KEY_NSPIRE_ ## x,
 static const t_key const * key_array[] = {
 	#include "n2dlib_keys.xmacro"
 };
 #undef GLUE_KEY
+#undef GLUE_NUMBER_KEY
 
-#define GLUE_KEY(x) "NK_"#x ,
+#define GLUE_KEY(x) #x ,
+#define GLUE_NUMBER_KEY(x) "K_"#x ,
 static const char * key_array_names[] = {
 	#include "n2dlib_keys.xmacro"
 };
 #undef GLUE_KEY
+#undef GLUE_NUMBER_KEY
 // Utilities
 
 SQInteger n2d_itofix (HSQUIRRELVM v)
