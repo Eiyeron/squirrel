@@ -1,5 +1,12 @@
-***2016-04-07        ***
-***version Ndless 1.0***
+***2016-04-08          ***
+***version Ndless 1.0.1***
+-Added a sokoban game example.
+-Sorted the key list for humans.
+-Fixed key names.
+-Fixed drawSpritePart which used the wrong variables.
+
+***2016-04-07          ***
+***version Ndless 1.0  ***
 -added support to Ti-Nspire
 -added n2DLibrary from Matrefeytontias
 
