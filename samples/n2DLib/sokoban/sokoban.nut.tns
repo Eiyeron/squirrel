@@ -1,0 +1,534 @@
+//////////////////////////////////
+// nSquirrel examples           //
+// Sokoban game                 //
+// By Florian 'Eiyeron' Dormont //
+// Defining the sprite size.    //
+// 2016 - MIT Lience            //
+//////////////////////////////////
+
+////////
+// NOTE
+/////
+// What's listed in this comment is left as an exercise for the reader.
+// WHy should I program the whole thing where you could also get your hands
+// dirty? :p
+//
+// - Do a title screen, a victory (when finishing a level or every levels) and
+//   a credits screen.
+// - Count the steps done in a level. Compare with the best solution if you can.
+// - Load levels from files. Here's a page containing infos on the .sok file
+//   format : http://sokobano.de/wiki/index.php?title=Sok_format
+// - Store best times/steps in highscore files
+// - There are animation frames for the character, you could make him move from
+//   tile to tile while pushing the block or not.
+// - Better graphisms? I'm bad at making pretty stuff.
+// - etc...
+////////
+
+// Constants and enumerations
+
+// Small constant to define the size in pixels of a tile.
+const BLOCSIZE = 16
+// Using an enum here isn't really useful as we would need to call it
+// BlockType.Ground at each point. Not something we want, right?
+// Ground
+const _ = 0
+// Wall
+const W = 1
+// Box
+const B = 2
+// Plate (the boxes must get on the plates).
+const P = 3
+// Second wall (for roof)
+const T = 4
+// Box on plate
+const V = 5
+
+// An enumeration are managed at compile-time, so it shouldn't be too expensive
+// to use one. (Sure, you can edit one in run-time, but it'll break stuff like
+// code serialization.)
+enum MoveDirection {
+  Top,
+  Left,
+  Right,
+  Bottom
+}
+
+// this enumeration allows making the game state more clear.
+enum LevelState {
+  Playing,
+  Won,
+  Abort
+}
+
+// Global variables
+
+// Variables which will hold the sprite data.
+local character_sheet = null
+local spritesheet = null
+
+// Classes
+
+// According to Squirrel's wiki, using classes for instancing data is better
+// than using tabls
+class Level{
+  // Map width
+  width = null
+  // Map heiht
+  height = null
+  // Player's starting location
+  player_start_x = null
+  player_start_y = null
+  // Copy of the map data so reloading it will be easier.
+  map_data_start = null
+  // Current map data.
+  map_data = null
+
+  // This is the constructor. Passing the variables to the instance.
+  constructor(w, h, px, py, m) {
+    width = w
+    height = h
+    player_start_x = px
+    player_start_y = py
+    map_data_start = m
+  }
+
+  // Creates the map data from the start state so we can start playing.
+  function start_level()
+  {
+    // Creating the map data if it didn't existed before
+    if(map_data == null) {
+      map_data = array(height)
+      for (local y = 0; y < height; y++) {
+        map_data[y] = array(width)
+      }
+    }
+    // Making the map's y dimension.
+    // Filling the y dimension with the x stripes
+    for (local y = 0; y < height; y++) {
+      for (local x = 0; x < width; x++) {
+        map_data[y][x] = map_data_start[y][x]
+      }
+    }
+  }
+
+  // Renders the map on the screen.
+  function render() {
+    for (local y = 0; y < height; y++) {
+      for (local x = 0; x < width; x++) {
+        if(map_data[y][x] != _)
+        {
+          local t = map_data[y][x]
+          n2d.drawSpritePart(
+            // Map spritesheet
+            spritesheet,
+            // Top left coordinate of the sprite on the screen
+            x * BLOCSIZE, y * BLOCSIZE,
+            // Dimension of the part of the sprite to draw
+            BLOCSIZE * t, 0, BLOCSIZE, BLOCSIZE,
+            // We don't want it to flick
+            0, 0
+          )
+        }
+      }
+    }
+  }
+
+  // Checks if the player can just move in the targeted tile. Returns true if so
+  // and false if not.
+  function move_block(blocx, blocy)
+  {
+    // Check first if the coordinates are in the map boundaries so we won't
+    // read outside the map and we won't get an exception killing the game.
+    if(blocx >= 0 && blocy >= 0 && blocx < width && blocy < height)
+      return map_data[blocy][blocx] == _ || map_data[blocy][blocx] == P;
+    return false;
+  }
+
+  // Checks if the selected tile is a block. If yes, pushes it in the selected
+  // direction. Returns true if the function actually moved the block and false
+  // if not.
+  function push_block(blocx, blocy, direction) {
+    // Check first if the coordinates are in the map boundaries so we won't
+    // read outside the map and we won't get an exception killing the game.
+    if(blocx >= 0 && blocy >= 0 && blocx < width && blocy < height)
+    {
+      if(map_data[blocy][blocx] == B || map_data[blocy][blocx] == V)
+      {
+        // We have a Box, be it on a plate or not now. Let's move it.
+        switch(direction)
+        {
+          case MoveDirection.Top:
+            // Let's stop before it'll break something so...
+            // Stop if the blocy can't go upwards because it'll get
+            // outside the bounds
+            if(blocy == 0)
+              return false;
+            // Stop if there is a wall or a box or a box on a plate
+            local targetTile = map_data[blocy - 1][blocx]
+            if(targetTile == W || targetTile == T
+              || targetTile == B || targetTile == V)
+              return false;
+
+            // So now, we can push the block, let's do it!
+            map_data[blocy][blocx] -= B
+            map_data[blocy - 1][blocx] += B
+          return true;
+
+          case MoveDirection.Bottom:
+            // Let's stop before it'll break something so...
+            // Stop if the blocy can't go downwards because it'll get
+            // outside the bounds
+            if(blocy == height - 1)
+              return false;
+            // Stop if there is a wall or a box or a box on a plate
+            local targetTile = map_data[blocy + 1][blocx]
+            if(targetTile == W || targetTile == T
+              || targetTile == B || targetTile == V)
+              return false;
+
+            // So now, we can push the block, let's do it!
+            map_data[blocy][blocx] -= B
+            map_data[blocy + 1][blocx] += B
+          return true;
+
+          case MoveDirection.Left:
+            // Let's stop before it'll break something so...
+            // Stop if the blocy can't go left because it'll get
+            // outside the bounds
+            if(blocx == 0)
+              return false;
+            // Stop if there is a wall or a box or a box on a plate
+            local targetTile = map_data[blocy][blocx - 1]
+            if(targetTile == W || targetTile == T
+              || targetTile == B || targetTile == V)
+              return false;
+
+            // So now, we can push the block, let's do it!
+            map_data[blocy][blocx] -= B
+            map_data[blocy][blocx - 1] += B
+          return true;
+
+          case MoveDirection.Right:
+            // Let's stop before it'll break something so...
+            // Stop if the blocy can't go right because it'll get
+            // outside the bounds
+            if(blocx == width - 1)
+              return false;
+            // Stop if there is a wall or a box or a box on a plate
+            local targetTile = map_data[blocy][blocx + 1]
+            if(targetTile == W || targetTile == T
+              || targetTile == B || targetTile == V)
+              return false;
+
+            // So now, we can push the block, let's do it!
+            map_data[blocy][blocx] -= B
+            map_data[blocy][blocx + 1] += B
+          return true;
+
+        }
+      }
+      // We coudln't move the block, alas.
+      return false;
+    }
+  }
+
+  // Checks the whole map if the level is actually solved or isn't. To know if
+  // it's solved, it checks if any plate doesn't have a box on it. If a plate
+  // doesn't have a box, the level is not solved and it'll return false. If not
+  // the level is finished and it'll return true.
+  function is_level_solved() {
+    for (local y = 0; y < height; y++) {
+      for (local x = 0; x < width; x++) {
+        if(map_data[y][x] == P) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+}
+
+// Functions
+
+// This function only exists to organize the source code, you can do without it.
+function init_data() {
+  // Loading the character's spritesheet.
+  character_sheet = n2d.loadBMP("character.bmp.tns", 0xF81F)
+  if(character_sheet == null) {
+    // This shoudln't happen if the correct files are next to the script.
+    print("character.bmp.tns not found. Make sure that this file is next"+
+    " to the script. Exiting...")
+    return false;
+  }
+
+  // Loading the levels' tilesheet.
+  spritesheet = n2d.loadBMP("sheet.bmp.tns", 0xF81F)
+  if(spritesheet == null) {
+    // This shoudln't happen if the correct files are next to the script.
+    print("sheet.bmp.tns not found. Make sure that this file is next"+
+    " to the script. Exiting...")
+    return false;
+  }
+  // Yay, everything is loaded, everything is awesome!
+  return true;
+}
+
+// This function represents the game state running on one level.
+function game(level) {
+
+  // - Some game variables -
+  // The game's state. Will be returned at the end of the game state to
+  // determine what to do next
+  local level_state = null
+
+  // These two variables are used to detect keys and avoid key repetition
+  local key = null
+  local previous_key = null
+  // Measuring the time at the start (or restart) of the level?
+  local starting_time = null
+  // Player coordinates
+  local player_x = null
+  local player_y = null
+  // Small variables to determine which sprite to use.
+  local player_direction = null
+
+  // This function, as it's coded inside another function, can access the
+  // conataining function's local variables. I'm using it here to reset values
+  // for the level.
+  function reset() {
+    // First, we load the level
+    level.start_level()
+    level_state = LevelState.Playing
+    // Preparing the key detection variables.
+    key = n2d.getKeyPressed()
+    previous_key = key
+    // Resetting the time.
+    starting_time = time()
+
+    // Setting our little character where it needs to be placed.
+    player_x = level.player_start_x
+    player_y = level.player_start_y
+    player_direction = MoveDirection.Bottom
+  }
+
+  // Let's prepare the game state.
+  reset()
+
+  // While we're still playing the game
+  while (level_state == LevelState.Playing) {
+    // Let's fetch a pressed key from the keyboard
+    local key = n2d.getKeyPressed()
+    // Let's check if it's not the same button we press to avoid key repetition.
+    local is_another_key_pressed = !(
+      key.row == previous_key.row
+      && key.col == previous_key.col
+      && key.tpad_row == previous_key.tpad_row
+      && key.tpad_col == previous_key.tpad_col
+      && key.tpad_arrow == previous_key.tpad_arrow
+      )
+    // So if it's really another key, then...
+    if(is_another_key_pressed)
+    {
+      // If we want to exit the game.
+      if(n2d.isKey(key, n2dk.ESC)) {
+        // Let's set the game state to Abort and break the loop.
+        level_state = LevelState.Abort;
+        break;
+      }
+      // Else if we want to go left.
+      else if(n2d.isKey(key, n2dk.LEFT) || n2d.isKey(key, n2dk.K_4)) {
+        // Our desired new position is one tile left.
+        local target_x = player_x - 1
+        player_direction = MoveDirection.Left
+        // If the player can move without moving a block.
+        if(level.move_block(target_x, player_y)) {
+          player_x = target_x
+        }
+        // Else if he's going to push a block
+        else if(level.push_block(target_x, player_y, MoveDirection.Left))
+        {
+          player_x = target_x
+          // Let's check if we just finished the level or not.
+          level_state = (level.is_level_solved() ?
+                          LevelState.Won :
+                          LevelState.Playing)
+        }
+      }
+      else if(n2d.isKey(key, n2dk.RIGHT) || n2d.isKey(key, n2dk.K_6)) {
+        // Our desired new position is one tile right.
+        local target_x = player_x + 1
+        player_direction = MoveDirection.Right
+        // If the player can move without moving a block.
+        if(level.move_block(target_x, player_y)) {
+          player_x = target_x
+        }
+        // Else if he's going to push a block
+        else if(level.push_block(target_x, player_y, MoveDirection.Right))
+        {
+          player_x = target_x
+          // Let's check if we just finished the level or not.
+          level_state = (level.is_level_solved() ?
+                          LevelState.Won :
+                          LevelState.Playing)
+        }
+      }
+      else if(n2d.isKey(key, n2dk.UP) || n2d.isKey(key, n2dk.K_8)) {
+        // Our desired new position is one tile up.
+        local target_y = player_y - 1
+        player_direction = MoveDirection.Top
+        // If the player can move without moving a block.
+        if(level.move_block(player_x, target_y)) {
+          player_y = target_y
+        }
+        // Else if he's going to push a block
+        else if(level.push_block(player_x, target_y, MoveDirection.Top))
+        {
+          player_y = target_y
+          // Let's check if we just finished the level or not.
+          level_state = (level.is_level_solved() ?
+                          LevelState.Won :
+                          LevelState.Playing)
+        }
+      }
+      else if(n2d.isKey(key, n2dk.DOWN) || n2d.isKey(key, n2dk.K_2)) {
+        // Our desired new position is one tile down.
+        local target_y = player_y + 1
+        player_direction = MoveDirection.Bottom
+        // If the player can move without moving a block.
+        if(level.move_block(player_x, target_y)) {
+          player_y = target_y
+        }
+        // Else if he's going to push a block
+        else if(level.push_block(player_x, target_y, MoveDirection.Bottom))
+        {
+          player_y = target_y
+          // Let's check if we just finished the level or not.
+          level_state = (level.is_level_solved() ?
+                          LevelState.Won :
+                          LevelState.Playing)
+        }
+      }
+      // Else if we want to restart the game.
+      else if(n2d.isKey(key, n2dk.R)) {
+        // Let's call the right function to do so! :D
+        reset()
+      }
+      // Put the detected key this frame in this variable so we can compare the
+      // next one with it.
+      previous_key = key
+    }
+
+    // Cleaning the screen
+    n2d.clearBufferB()
+    // Drawing the map
+    level.render()
+    // Drawing the character on the screen
+    n2d.drawSpritePart(character_sheet, player_x*16, player_y*16,
+      16*player_direction, 0, 16, 16,
+      0, 0)
+    // Let's get the spent time since the start of the level and print it.
+    local current_time = time()
+    // Calculating the difference between now and the starting time.
+    local delta_time = current_time - starting_time
+    // Calculating the minutes and converting it to integer so we don't have a
+    // ugly floating point value
+    local minutes = (delta_time/60)
+    minutes = minutes.tointeger()
+    // Calulcating the seconds
+    local seconds = delta_time%60
+    // Slap it on the screen, you know you like it, baby!
+    n2d.drawString(0, 232, 0, "Time : "+minutes+":"+seconds, 0xFFFF, 0x0000)
+    // Displays the changes on the screen.
+    n2d.updateScreen()
+  }
+
+  return level_state;
+}
+
+function main() {
+  // If we couldn't load any of the external files, we can't really play
+  // the game, so let's exit before something break, okay?
+  if(!init_data()) {
+    return;
+  }
+
+  // The levels of our happy little game.
+  local current_level = 0
+  local levels = [
+    // Using some levels from Microban
+    // Source : http://sneezingtiger.com/sokoban/levels/microbanText.html
+    Level(6, 7, 2, 3, [
+      [T,W,W,W,_,_],
+      [T,_,P,T,_,_],
+      [T,_,_,W,W,T],
+      [T,V,_,_,_,T],
+      [T,_,_,B,_,T],
+      [T,_,_,T,W,T],
+      [W,W,W,W,_,_]
+    ]),
+    Level(6, 7, 3, 2, [
+      [T,W,W,W,W,T],
+      [T,_,_,_,_,T],
+      [T,_,W,_,_,T],
+      [T,_,B,V,_,T],
+      [T,_,P,V,_,T],
+      [T,_,_,_,_,T],
+      [W,W,W,W,W,W]
+      ]),
+    Level(9, 6, 6, 4, [
+      [_,_,T,W,W,T,_,_,_],
+      [T,W,W,_,_,W,W,W,T],
+      [T,_,_,_,_,_,B,_,T],
+      [T,_,W,_,_,T,B,_,T],
+      [T,_,P,_,P,T,_,_,T],
+      [T,W,W,W,W,W,W,W,T]
+      ]),
+    Level(8, 6, 6, 2, [
+      [T,W,W,W,W,W,W,T],
+      [T,_,_,_,_,_,_,T],
+      [T,_,P,V,V,B,_,T],
+      [T,_,_,_,_,_,_,T],
+      [W,W,W,W,T,_,_,T],
+      [_,_,_,_,W,W,W,W],
+      ]),
+    Level(8, 7, 4, 3, [
+      [_,T,W,W,W,W,W,T],
+      [_,T,_,_,_,_,_,T],
+      [_,T,_,P,B,P,_,T],
+      [T,W,_,B,_,B,_,T],
+      [T,_,_,P,B,P,_,T],
+      [T,_,_,_,_,_,_,T],
+      [W,W,W,W,W,W,W,W]
+      ])
+  ]
+
+  // Initializing n2DLib
+  n2d.initBuffering()
+  // Setting a small loop variable, it's always cleaner than just a while(true)
+  local quit = false
+  while(!quit) {
+    // Let's get the result of playing the current level
+    local result = game(levels[current_level])
+    switch(result) {
+      // If we won this level, let's go to the next level.
+      case LevelState.Won:
+        current_level++
+        // But if we ran out of levels, let's quit.
+        if(current_level >= levels.len()) {
+          quit = true
+        }
+      break;
+      // If we want to quit earlier.
+      case LevelState.Abort:
+        quit = true;
+      break;
+    }
+  }
+  // Deinitializing n2DLib correctly like a correct programmer.
+  n2d.deinitBuffering()
+}
+
+// The entry point of the program. That's actually the first line of code called
+
+main()
