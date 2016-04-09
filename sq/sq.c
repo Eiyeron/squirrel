@@ -234,7 +234,7 @@ int getargs(HSQUIRRELVM v,int argc, char* argv[],SQInteger *retval)
 
                 }
             }
-            //if this point is reached an error occured
+            //if this point is reached an error occurred
             {
                 const SQChar *err;
                 sq_getlasterror(v);
