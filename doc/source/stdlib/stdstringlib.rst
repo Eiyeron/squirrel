@@ -42,7 +42,7 @@ Global Symbols
     Strips white-space-only characters that might appear at the end of the given string
     and returns the new stripped string.
 
-.. js:function:: split(str, separtators)
+.. js:function:: split(str, separators)
 
     returns an array of strings split at each point where a separator character occurs in `str`.
     The separator is not returned as part of any array element.
@@ -57,7 +57,7 @@ Global Symbols
 
 .. js:function:: startswith(str, cmp)
 
-    returns `true` if the beginning of the string `str`  matches a the string `cmp` otherwise returns `false`
+    returns `true` if the beginning of the string `str` matches the string `cmp`; otherwise returns `false`
 	
 .. js:function:: strip(str)
 
@@ -69,8 +69,8 @@ The regexp class
 
 .. js:class:: regexp(pattern)
 
-    The regexp object rapresent a precompiled regular experssion pattern. The object is created
-    trough `regexp(patern)`.
+    The regexp object represents a precompiled regular expression pattern. The object is created
+    through `regexp(pattern)`.
 
 
 +---------------------+--------------------------------------+
@@ -140,19 +140,19 @@ The regexp class
 +---------------------+--------------------------------------+
 |      `\\d`          |  digits                              |
 +---------------------+--------------------------------------+
-|      `\\D`          |  non nondigits                       |
+|      `\\D`          |  non digits                          |
 +---------------------+--------------------------------------+
-|      `\\x`          |  exadecimal digits                   |
+|      `\\x`          |  hexadecimal digits                  |
 +---------------------+--------------------------------------+
-|      `\\X`          |  non exadecimal digits               |
+|      `\\X`          |  non hexadecimal digits              |
 +---------------------+--------------------------------------+
 |      `\\c`          |  control characters                  |
 +---------------------+--------------------------------------+
 |      `\\C`          |  non control characters              |
 +---------------------+--------------------------------------+
-|      `\\p`          |  punctation                          |
+|      `\\p`          |  punctuation                          |
 +---------------------+--------------------------------------+
-|      `\\P`          |  non punctation                      |
+|      `\\P`          |  non punctuation                      |
 +---------------------+--------------------------------------+
 |      `\\b`          |  word boundary                       |
 +---------------------+--------------------------------------+
@@ -162,13 +162,13 @@ The regexp class
 
 .. js:function:: regexp.capture(str [, start])
 
-    returns an array of tables containing two indexs("begin" and "end")of
+    returns an array of tables containing two indexes ("begin" and "end") of
     the first match of the regular expression in the string `str`.
     An array entry is created for each captured sub expressions. If no match occurs returns null.
     The search starts from the index `start`
-    of the string, if `start` is omitted the search starts from the beginning of the string.
+    of the string; if `start` is omitted the search starts from the beginning of the string.
 
-    the first element of the returned array(index 0) always contains the complete match.
+    The first element of the returned array(index 0) always contains the complete match.
 
     ::
 
@@ -195,9 +195,9 @@ The regexp class
 
 .. js:function:: regexp.search(str [, start])
 
-    returns a table containing two indexs("begin" and "end") of the first match of the regular expression in
+    returns a table containing two indexes ("begin" and "end") of the first match of the regular expression in
     the string `str`, otherwise if no match occurs returns null. The search starts from the index `start`
-    of the string, if `start` is omitted the search starts from the beginning of the string.
+    of the string; if `start` is omitted the search starts from the beginning of the string.
 
     ::
 
@@ -275,7 +275,7 @@ Regular Expessions
     :param SQChar** out_end: a pointer to a string pointer that will be set with the end of the match
     :returns: SQTrue if successful otherwise SQFalse
 
-    searches the first match of the expressin in the string specified in the parameter text.
+    searches the first match of the expression in the string specified in the parameter text.
     if the match is found returns SQTrue and the sets out_begin to the beginning of the
     match and out_end at the end of the match; otherwise returns SQFalse.
 
@@ -288,9 +288,9 @@ Regular Expessions
     :param SQChar** out_end: a pointer to a string pointer that will be set with the end of the match
     :returns: SQTrue if successful otherwise SQFalse
 
-    searches the first match of the expressin in the string delimited
+    searches the first match of the expression in the string delimited
     by the parameter text_begin and text_end.
-    if the match is found returns SQTrue and the sets out_begin to the beginning of the
+    if the match is found returns SQTrue and sets out_begin to the beginning of the
     match and out_end at the end of the match; otherwise returns SQFalse.
 
 .. c:function:: SQInteger sqstd_rex_getsubexpcount(SQRex * exp)
@@ -305,7 +305,7 @@ Regular Expessions
     :param SQRex* exp: a compiled expression
     :param SQInteger n: the index of the submatch(0 is the complete match)
     :param SQRexMatch* a: pointer to structure that will store the result
-    :returns: the function returns SQTrue if n is valid index otherwise SQFalse.
+    :returns: the function returns SQTrue if n is a valid index; otherwise SQFalse.
 
     retrieve the begin and and pointer to the length of the sub expression indexed
-    by n. The result is passed trhough the struct SQRexMatch.
+    by n. The result is passed through the struct SQRexMatch.
