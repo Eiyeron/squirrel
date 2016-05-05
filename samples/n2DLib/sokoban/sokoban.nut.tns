@@ -254,7 +254,7 @@ class Level{
 // This function only exists to organize the source code, you can do without it.
 function init_data() {
   // Loading the character's spritesheet.
-  character_sheet = n2d.loadBMP("character.bmp.tns", 0xF81F)
+  character_sheet = n2d.loadBMP("character.bmp.tns", 0x88f0)
   if(character_sheet == null) {
     // This shoudln't happen if the correct files are next to the script.
     print("character.bmp.tns not found. Make sure that this file is next"+
