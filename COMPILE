@@ -78,7 +78,6 @@ VISUAL C++ USERS
 .........................................................
 Open squirrel.dsw from the root project directory and build(dho!)
 
-
 TI-NSPIRE USERS
 .........................................................
 The default makefile support compilation for Ti-Nspire, as long as
@@ -94,3 +93,10 @@ must be chosen according to which use of squirrel you want to do.
 As nspireio doesn't take over printf, you have to replace it with
 nio_printf if you even intend to use Nspire-IO or keep it at printf
 if you will embed the interpreter in a project.
+
+DOCUMENTATION GENERATION
+.........................................................
+To be able to compile the documentation, make sure that you have Python
+installed and the packages sphinx and sphinx_rtd_theme. Browse into doc/
+and use either the Makefile for GCC-based platforms or make.bat for
+Windows platforms.

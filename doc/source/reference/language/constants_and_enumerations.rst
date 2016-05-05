@@ -2,16 +2,16 @@
 
 
 ========================
-Constants & Enumarations
+Constants & Enumerations
 ========================
 
 .. index::
-    single: Constants & Enumarations
+    single: Constants & Enumerations
 
 
 
 Squirrel allows to bind constant values to an identifier that will be evaluated compile-time.
-This is archieved though constants and enumarations.
+This is achieved though constants and Enumerations.
 
 ---------------
 Constants
@@ -20,7 +20,7 @@ Constants
 .. index::
     single: Constants
 
-Constants bind a specific value to an indentifier. Constants are similar to
+Constants bind a specific value to an identifier. Constants are similar to
 global values, except that they are evaluated compile time and their value cannot be changed.
 
 constants values can only be integers, floats or string literals. No expression are allowed.
@@ -28,7 +28,7 @@ are declared with the following syntax.::
 
     const foobar = 100;
     const floatbar = 1.2;
-    const stringbar = "I'm a contant string";
+    const stringbar = "I'm a constant string";
 
 constants are always globally scoped, from the moment they are declared, any following code
 can reference them.
@@ -37,17 +37,17 @@ Constants will shadow any global slot with the same name( the global slot will r
     local x = foobar * 2;
 
 ---------------
-Enumrations
+Enumerations
 ---------------
 
 .. index::
-    single: Enumrations
+    single: Enumerations
 
-As Constants, Enumerations bind a specific value to a name. Enumerations are also evaluated compile time
+As Constants, Enumerations bind a specific value to a name. Enumerations are also evaluated at compile time
 and their value cannot be changed.
 
 An enum declaration introduces a new enumeration into the program.
-Enumerations values can only be integers, floats or string literals. No expression are allowed.::
+Enumeration values can only be integers, floats or string literals. No expression are allowed.::
 
     enum Stuff {
       first, //this will be 0
@@ -73,7 +73,7 @@ Enumerations will shadow any global slot with the same name( the global slot wil
 Implementation notes
 --------------------
 
-Enumerations and Contants are a compile-time feature. Only integers, string and floats can be declared as const/enum;
+Enumerations and Constants are a compile-time feature. Only integers, string and floats can be declared as const/enum;
 No expressions are allowed(because they would have to be evaluated compile time).
 When a const or an enum is declared, it is added compile time to the ``consttable``. This table is stored in the VM shared state
 and is shared by the VM and all its threads.
