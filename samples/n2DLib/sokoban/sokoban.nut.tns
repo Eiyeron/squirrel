@@ -2,7 +2,6 @@
 // nSquirrel examples           //
 // Sokoban game                 //
 // By Florian 'Eiyeron' Dormont //
-// Defining the sprite size.    //
 // 2016 - MIT Lience            //
 //////////////////////////////////
 
@@ -15,7 +14,8 @@
 //
 // - Do a title screen, a victory (when finishing a level or every levels) and
 //   a credits screen.
-// - Count the steps done in a level. Compare with the best solution if you can.
+// - Count the steps done in a level.
+//   Compare with the best solution (or the step record) if you can.
 // - Load levels from files. Here's a page containing infos on the .sok file
 //   format : http://sokobano.de/wiki/index.php?title=Sok_format
 // - Store best times/steps in highscore files
@@ -134,8 +134,8 @@ class Level{
     }
   }
 
-  // Checks if the player can just move in the targeted tile. Returns true if so
-  // and false if not.
+  // Checks if the player can just move in the targeted tile. Returns true if
+  // so and false if not.
   function move_block(blocx, blocy)
   {
     // Check first if the coordinates are in the map boundaries so we won't
@@ -251,7 +251,8 @@ class Level{
 
 // Functions
 
-// This function only exists to organize the source code, you can do without it.
+// This function only exists to organize the source code,
+// you can do your game without it.
 function init_data() {
   // Loading the character's spritesheet.
   character_sheet = n2d.loadBMP("character.bmp.tns", 0x88f0)
@@ -319,7 +320,7 @@ function game(level) {
   while (level_state == LevelState.Playing) {
     // Let's fetch a pressed key from the keyboard
     local key = n2d.getKeyPressed()
-    // Let's check if it's not the same button we press to avoid key repetition.
+    // Let's check if it's not the same button we press to avoid key repetition
     local is_another_key_pressed = !(
       key.row == previous_key.row
       && key.col == previous_key.col
@@ -529,6 +530,6 @@ function main() {
   n2d.deinitBuffering()
 }
 
-// The entry point of the program. That's actually the first line of code called
+// The entry point of the program.
 
 main()
