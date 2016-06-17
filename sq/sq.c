@@ -68,7 +68,6 @@ void printfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
     scvprintf(stdout, s, vl);
 #endif
     va_end(vl);
-    (void)v; /* UNUSED */
 }
 
 void errorfunc(HSQUIRRELVM SQ_UNUSED_ARG(v),const SQChar *s,...)
