@@ -31,4 +31,12 @@ community forums - http://forum.squirrel-lang.org
 wiki - http://wiki.squirrel-lang.org
 author - alberto@demichelis.net
 
+Known issues
+------------
+
+- There is an issue with printing floating points values on
+recent versions of Ndless when installed on a 3.1 OS. I have
+no way to nail the origin of the issue because similar configurations
+to mine just work perfectly. So sorry, until I get a way to fix it, I'm
+leaving it. - Eiyeron.
 END OF README
