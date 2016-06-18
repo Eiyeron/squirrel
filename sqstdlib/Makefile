@@ -43,5 +43,5 @@ sq64:
 sqnspire:
 	nspire-gcc -O2 -fno-exceptions -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) -lnspireio
 	# Ndless doesn't provide a ndless-ar wrapper
-	ar rc $(OUT) *.o
+	arm-none-eabi-ar rc $(OUT) *.o
 	rm *.o
