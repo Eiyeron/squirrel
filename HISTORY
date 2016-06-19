@@ -1,3 +1,10 @@
+***Next version        ***
+***version Ndless 1.1.0***
+-Fixed the bitmap loading routine (thanks Matref)
+-Fixed a gcc compilation step.
+-Printf has been added on squirrel's side.
+-Following squirrel source version 26ef4c4f5e046b8760ba800c3549b3871efa6264 (commit hash)
+
 ***2016-04-08          ***
 ***version Ndless 1.0.1***
 -Added a sokoban game example.
