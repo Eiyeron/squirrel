@@ -230,6 +230,3 @@ Image loading routines
 
     NOTE
         This function load only 24-bit (R8G8B8) bitmap files. Make sure that you chose the correct format.
-
-    WARNING!
-        Current version of this function doesn't correctly load pictures with width not multiple of 16 (or 8). This has been issued to the library developper.
